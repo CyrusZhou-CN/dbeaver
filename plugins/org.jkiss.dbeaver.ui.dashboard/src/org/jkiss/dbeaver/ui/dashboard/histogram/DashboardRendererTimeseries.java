@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jkiss.dbeaver.ui.dashboard.histogram;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -68,7 +69,8 @@ public class DashboardRendererTimeseries extends DashboardRendererDatabaseChart 
 
         DashboardItemViewSettings viewConfig = container.getItemConfiguration();
 
-        Color gridColor = AWTUtils.makeAWTColor(UIStyles.getDefaultTextForeground());
+        Display display = composite.getDisplay();
+        Color gridColor = AWTUtils.makeAWTColor(UIStyles.getDefaultTextForeground(display));
 
         JFreeChart histogramChart = ChartFactory.createXYLineChart(
             null,
@@ -82,7 +84,7 @@ public class DashboardRendererTimeseries extends DashboardRendererDatabaseChart 
         histogramChart.setBorderVisible(false);
         histogramChart.setPadding(new RectangleInsets(0, 0, 0, 0));
         histogramChart.setTextAntiAlias(true);
-        histogramChart.setBackgroundPaint(AWTUtils.makeAWTColor(UIStyles.getDefaultTextBackground()));
+        histogramChart.setBackgroundPaint(AWTUtils.makeAWTColor(UIStyles.getDefaultTextBackground(display)));
 
         createDefaultLegend(viewConfig, histogramChart);
 
@@ -274,7 +276,7 @@ public class DashboardRendererTimeseries extends DashboardRendererDatabaseChart 
         }
 
         if (!rows.isEmpty()) {
-            chartComposite.setData("last_row", rows.get(rows.size() - 1));
+            chartComposite.setData("last_row", rows.getLast());
         }
     }
 

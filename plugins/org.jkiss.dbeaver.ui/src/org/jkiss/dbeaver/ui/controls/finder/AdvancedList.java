@@ -64,10 +64,11 @@ public class AdvancedList extends Canvas {
         super(parent, SWT.V_SCROLL | SWT.DOUBLE_BUFFERED | style);
 
         CSSUtils.setCSSClass(this, "List");
-        this.backgroundColor = UIStyles.getDefaultTextBackground();
-        this.foregroundColor = UIStyles.getDefaultTextForeground();
-        this.selectionBackgroundColor = UIStyles.getDefaultTextSelectionBackground();
-        this.selectionForegroundColor = UIStyles.getDefaultTextSelectionForeground();
+        Display display = parent.getDisplay();
+        this.backgroundColor = UIStyles.getDefaultTextBackground(display);
+        this.foregroundColor = UIStyles.getDefaultTextForeground(display);
+        this.selectionBackgroundColor = UIStyles.getDefaultTextSelectionBackground(display);
+        this.selectionForegroundColor = UIStyles.getDefaultTextSelectionForeground(display);
         this.hoverBackgroundColor = UIUtils.getSharedTextColors().getColor(
             UIUtils.blend(this.selectionBackgroundColor.getRGB(), new RGB(255, 255, 255), 70));
 

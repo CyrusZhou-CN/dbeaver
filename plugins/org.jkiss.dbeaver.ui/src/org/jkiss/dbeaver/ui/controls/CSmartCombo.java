@@ -94,7 +94,7 @@ public class CSmartCombo<ITEM_TYPE> extends Composite {
 
         this.setCursor(getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
         this.setEnabled(true, true);
-        this.setForeground(UIStyles.getDefaultTextForeground());
+        this.setForeground(UIStyles.getDefaultTextForeground(getDisplay()));
 
         this.listener = event -> {
             if (isDisposed()) {
@@ -336,7 +336,7 @@ public class CSmartCombo<ITEM_TYPE> extends Composite {
             this.imageLabel.setImage(itemImage);
         }
         if (itemBackground == null) {
-            itemBackground = UIStyles.getDefaultTextBackground();
+            itemBackground = UIStyles.getDefaultTextBackground(getDisplay());
         }
         this.setBackground(itemBackground);
     }
@@ -510,7 +510,7 @@ public class CSmartCombo<ITEM_TYPE> extends Composite {
                 itemForeground = ((IColorProvider) labelProvider).getForeground(item);
             }
             if (itemBackground != null && itemForeground == null) {
-                itemForeground = UIStyles.getContrastColor(itemBackground);
+                itemForeground = UIStyles.getContrastColor(getDisplay(), itemBackground);
             }
             TreeItem newItem = new TreeItem(table, SWT.NONE);
             newItem.setData(item);

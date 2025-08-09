@@ -913,22 +913,22 @@ public class SpreadsheetPresentation extends AbstractPresentation
         rowBatchSize = preferenceStore.getInt(ResultSetPreferences.RESULT_SET_ROW_BATCH_SIZE);
 
         showAttrOrdering = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_ATTR_ORDERING);
-        showAttributeIcons = controller.getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_SHOW_ATTR_ICONS);
-        showAttributeDescription = getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_SHOW_DESCRIPTION);
+        showAttributeIcons = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_ATTR_ICONS);
+        showAttributeDescription = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_DESCRIPTION);
         supportsAttributeFilter =
             controller.getDataContainer() != null &&
                 (controller.getDecorator().getDecoratorFeatures() & IResultSetDecorator.FEATURE_FILTERS) != 0 &&
                 controller.getDataContainer().isFeatureSupported(DBSDataContainer.FEATURE_DATA_FILTER) &&
-                controller.getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_SHOW_ATTR_FILTERS);
-        autoFetchSegments = controller.getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_AUTO_FETCH_NEXT_SEGMENT);
-        calcColumnWidthByValue = getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_CALC_COLUMN_WIDTH_BY_VALUES);
+                preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_ATTR_FILTERS);
+        autoFetchSegments = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_AUTO_FETCH_NEXT_SEGMENT);
+        calcColumnWidthByValue = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_CALC_COLUMN_WIDTH_BY_VALUES);
         showBooleanAsCheckbox = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_BOOLEAN_AS_CHECKBOX);
         showWhitespaceCharacters = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_WHITESPACE_CHARACTERS);
-        booleanStyles = BooleanStyleSet.getDefaultStyles(preferenceStore);
-        useNativeNumbersFormat = controller.getPreferenceStore().getBoolean(ModelPreferences.RESULT_NATIVE_NUMERIC_FORMAT);
+        booleanStyles = BooleanStyleSet.getDefaultStyles(preferenceStore, spreadsheet.getDisplay());
+        useNativeNumbersFormat = preferenceStore.getBoolean(ModelPreferences.RESULT_NATIVE_NUMERIC_FORMAT);
 
-        spreadsheet.setColumnScrolling(!getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_USE_SMOOTH_SCROLLING));
-        gridValueFormat = CommonUtils.valueOf(DBDDisplayFormat.class, getPreferenceStore().getString(ResultSetPreferences.RESULT_GRID_VALUE_FORMAT), DBDDisplayFormat.UI);
+        spreadsheet.setColumnScrolling(!preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_USE_SMOOTH_SCROLLING));
+        gridValueFormat = CommonUtils.valueOf(DBDDisplayFormat.class, preferenceStore.getString(ResultSetPreferences.RESULT_GRID_VALUE_FORMAT), DBDDisplayFormat.UI);
 
         spreadsheet.setRedraw(false);
         try {
@@ -1434,6 +1434,7 @@ public class SpreadsheetPresentation extends AbstractPresentation
     protected void applyThemeSettings(ITheme currentTheme) {
         this.spreadsheet.setFont(ResultSetThemeSettings.instance.resultSetFont);
 
+        Display display = spreadsheet.getDisplay();
         {
             if (this.cellHeaderSelectionBackground != null) {
                 UIUtils.dispose(this.cellHeaderSelectionBackground);
@@ -1442,7 +1443,9 @@ public class SpreadsheetPresentation extends AbstractPresentation
             Color headerSelectionBackground = ResultSetThemeSettings.instance.cellHeaderSelectedBackground;
             RGB cellSel = UIUtils.blend(
                 headerSelectionBackground.getRGB(),
-                UIStyles.isDarkTheme() ? new RGB(100, 100, 100) : new RGB(255, 255, 255),
+                UIStyles.isDarkTheme(display) ?
+                    new RGB(100, 100, 100) :
+                    new RGB(255, 255, 255),
                 50);
             this.cellHeaderSelectionBackground = new Color(getSpreadsheet().getDisplay(), cellSel);
         }
@@ -1451,7 +1454,7 @@ public class SpreadsheetPresentation extends AbstractPresentation
 
         this.spreadsheet.recalculateSizes(true);
 
-        this.booleanStyles = BooleanStyleSet.getDefaultStyles(getPreferenceStore());
+        this.booleanStyles = BooleanStyleSet.getDefaultStyles(getPreferenceStore(), display);
 
         this.colorizeDataTypes = getPreferenceStore().getBoolean(ResultSetPreferences.RESULT_SET_COLORIZE_DATA_TYPES);
 
@@ -2543,7 +2546,7 @@ public class SpreadsheetPresentation extends AbstractPresentation
                     }
                 }
             }
-            return UIStyles.getContrastColor(background);
+            return UIStyles.getContrastColor(getSpreadsheet().getDisplay(), background);
         }
 
         private Color getCellBackground(

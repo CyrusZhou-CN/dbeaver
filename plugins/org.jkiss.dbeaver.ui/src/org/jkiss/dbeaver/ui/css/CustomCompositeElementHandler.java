@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,10 @@ import org.eclipse.e4.ui.css.swt.helpers.SWTElementHelpers;
 import org.eclipse.e4.ui.css.swt.properties.css2.CSSPropertyBackgroundSWTHandler;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.Widget;
 import org.jkiss.dbeaver.ui.UIStyles;
 import org.jkiss.dbeaver.ui.UIUtils;
 import org.w3c.dom.Element;
@@ -42,10 +45,12 @@ public class CustomCompositeElementHandler extends CSSPropertyBackgroundSWTHandl
 
     @Override
     public boolean applyCSSProperty(Object element, String property, CSSValue value, String pseudo, CSSEngine engine) throws Exception {
-        if (property.equals(PROP_BACKGROUND_COLOR) && UIStyles.isDarkTheme()) {
+        if (property.equals(PROP_BACKGROUND_COLOR)) {
             Composite widget = (Composite) SWTElementHelpers.getWidget(element);
             Widget mimicControl = CSSUtils.getMimicControl(widget);
-            if (mimicControl != null && mimicControlStyles(engine, mimicControl, widget)) {
+            if (mimicControl != null &&
+                UIStyles.isDarkTheme(mimicControl.getDisplay()) &&
+                mimicControlStyles(engine, mimicControl, widget)) {
                 return true;
             }
         }

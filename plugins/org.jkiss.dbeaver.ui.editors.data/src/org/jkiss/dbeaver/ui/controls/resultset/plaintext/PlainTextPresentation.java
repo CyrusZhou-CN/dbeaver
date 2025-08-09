@@ -34,10 +34,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.printing.PrintDialog;
 import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.printing.PrinterData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.themes.ITheme;
 import org.jkiss.code.NotNull;
 import org.jkiss.code.Nullable;
@@ -83,13 +80,14 @@ public class PlainTextPresentation extends AbstractPresentation implements IResu
     public void createPresentation(@NotNull final IResultSetController controller, @NotNull Composite parent) {
         super.createPresentation(controller, parent);
 
+        Display display = parent.getDisplay();
         UIUtils.createHorizontalLine(parent);
         text = new StyledText(parent, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         text.setBlockSelection(true);
-        text.setCursor(parent.getDisplay().getSystemCursor(SWT.CURSOR_IBEAM));
+        text.setCursor(display.getSystemCursor(SWT.CURSOR_IBEAM));
         text.setMargins(4, 4, 4, 4);
-        text.setForeground(UIStyles.getDefaultTextForeground());
-        text.setBackground(UIStyles.getDefaultTextBackground());
+        text.setForeground(UIStyles.getDefaultTextForeground(display));
+        text.setBackground(UIStyles.getDefaultTextBackground(display));
         text.setTabs(controller.getPreferenceStore().getInt(ResultSetPreferences.RESULT_TEXT_TAB_SIZE));
         text.setTabStops(null);
         text.setFont(UIUtils.getMonospaceFont());
@@ -129,8 +127,9 @@ public class PlainTextPresentation extends AbstractPresentation implements IResu
     @Override
     protected void applyThemeSettings(ITheme currentTheme) {
         text.setFont(BaseThemeSettings.instance.monospaceFont);
-        if (UIStyles.isDarkHighContrastTheme()) {
-            text.setBackground(UIStyles.getDefaultWidgetBackground());
+        Display display = getControl().getDisplay();
+        if (UIStyles.isDarkHighContrastTheme(display)) {
+            text.setBackground(UIStyles.getDefaultWidgetBackground(display));
             text.setForeground(UIStyles.COLOR_WHITE);
             curLineColor = COLOR_GREEN_CONTRAST;
         } else {

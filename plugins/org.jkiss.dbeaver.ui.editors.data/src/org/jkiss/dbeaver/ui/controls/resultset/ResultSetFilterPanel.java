@@ -132,8 +132,9 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
         gl.marginWidth = 3;
         this.setLayout(gl);
 
-        boolean isDark = UIStyles.isDarkTheme();
-        this.shadowColor = getDisplay().getSystemColor(isDark ? SWT.COLOR_WIDGET_LIGHT_SHADOW : SWT.COLOR_WIDGET_NORMAL_SHADOW);
+        Display display = getDisplay();
+        boolean isDark = UIStyles.isDarkTheme(display);
+        this.shadowColor = display.getSystemColor(isDark ? SWT.COLOR_WIDGET_LIGHT_SHADOW : SWT.COLOR_WIDGET_NORMAL_SHADOW);
 
         {
             this.filterComposite = new Composite(this, SWT.NONE);
@@ -158,7 +159,7 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
             this.filtersTextViewer = new TextViewer(filterComposite, SWT.MULTI);
             this.filtersTextViewer.setDocument(new Document());
             this.filtersText = this.filtersTextViewer.getTextWidget();
-            this.filtersText.setForeground(UIStyles.getDefaultTextForeground());
+            this.filtersText.setForeground(UIStyles.getDefaultTextForeground(display));
             this.filtersText.setFont(BaseThemeSettings.instance.baseFont);
             TextViewerUndoManager undoManager = new TextViewerUndoManager(200);
             undoManager.connect(filtersTextViewer);

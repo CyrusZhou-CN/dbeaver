@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,11 +52,14 @@ public class SQLSourceViewerDecorationSupport extends SourceViewerDecorationSupp
 
     private void setSpellingAnnotationsStyle() {
         // Set spelling annotation color to shadow
+
+        Display display = Display.getCurrent();
         annotationPainter.setAnnotationTypeColor(
             SpellingAnnotation.TYPE,
-            Display.getDefault().getSystemColor(UIStyles.isDarkTheme() ?
+            display.getSystemColor(UIStyles.isDarkTheme(display) ?
                 SWT.COLOR_WIDGET_LIGHT_SHADOW :
-                SWT.COLOR_WIDGET_NORMAL_SHADOW));
+                SWT.COLOR_WIDGET_NORMAL_SHADOW)
+        );
     }
 
 }

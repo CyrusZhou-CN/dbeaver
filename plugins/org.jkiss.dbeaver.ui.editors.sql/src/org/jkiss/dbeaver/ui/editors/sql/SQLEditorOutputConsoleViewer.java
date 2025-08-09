@@ -22,6 +22,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.TextConsoleViewer;
@@ -122,12 +123,13 @@ public class SQLEditorOutputConsoleViewer extends TextConsoleViewer {
             if (outputFont != null) {
                 textWidget.setFont(outputFont);
             }
-            if (UIStyles.isDarkHighContrastTheme()) {
+            Display display = textWidget.getDisplay();
+            if (UIStyles.isDarkHighContrastTheme(display)) {
                 textWidget.setForeground(UIStyles.COLOR_WHITE);
-                textWidget.setBackground(UIStyles.getDefaultWidgetBackground());
+                textWidget.setBackground(UIStyles.getDefaultWidgetBackground(display));
             } else {
-                textWidget.setForeground(UIStyles.getDefaultTextForeground());
-                textWidget.setBackground(UIStyles.getDefaultTextBackground());
+                textWidget.setForeground(UIStyles.getDefaultTextForeground(display));
+                textWidget.setBackground(UIStyles.getDefaultTextBackground(display));
             }
         }
     }

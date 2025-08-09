@@ -20,6 +20,7 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 import org.jkiss.dbeaver.model.sql.parser.tokens.SQLTokenType;
 import org.jkiss.dbeaver.model.text.parser.TPToken;
 import org.jkiss.dbeaver.model.text.parser.TPTokenDefault;
@@ -141,7 +142,7 @@ public class SQLTokenAdapter extends Token {
             style = SWT.NORMAL;
         }
 
-        if (UIStyles.isDarkHighContrastTheme()) {
+        if (UIStyles.isDarkHighContrastTheme(Display.getCurrent())) {
             if (color == SQLEditorThemeSettings.instance.editorTextColor) {
                 color = UIStyles.COLOR_WHITE;
             } else {

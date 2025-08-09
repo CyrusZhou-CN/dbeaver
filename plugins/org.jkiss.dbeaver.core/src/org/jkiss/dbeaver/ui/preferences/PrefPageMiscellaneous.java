@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class PrefPageMiscellaneous extends PrefPageMiscellaneousAbstract impleme
                 public void widgetSelected(SelectionEvent e) {
                     final DBPPreferenceStore store = DBWorkbench.getPlatform().getPreferenceStore();
                     final BooleanMode mode = (BooleanMode) e.widget.getData();
-                    notifyBooleanStylesChanged(BooleanStyleSet.getDefaultStyles(store, mode));
+                    notifyBooleanStylesChanged(BooleanStyleSet.getDefaultStyles(store, parent.getDisplay(), mode));
                 }
             };
 
@@ -121,8 +121,9 @@ public class PrefPageMiscellaneous extends PrefPageMiscellaneousAbstract impleme
             UIUtils.createPlaceholder(group, 1);
             UIUtils.createControlLabel(group, CoreMessages.pref_page_ui_general_boolean_label_color);
 
-            BooleanStyleSet savedStyles = BooleanStyleSet.getDefaultStyles(DBWorkbench.getPlatform().getPreferenceStore());
-            BooleanStyleSet defaultStyles = BooleanStyleSet.getDefaultStyleSet();
+            Display display = parent.getDisplay();
+            BooleanStyleSet savedStyles = BooleanStyleSet.getDefaultStyles(DBWorkbench.getPlatform().getPreferenceStore(), display);
+            BooleanStyleSet defaultStyles = BooleanStyleSet.getDefaultStyleSet(display);
 
             booleanCheckedPanel = new BooleanPanel(
                     group,
@@ -171,7 +172,7 @@ public class PrefPageMiscellaneous extends PrefPageMiscellaneousAbstract impleme
 
         holidayDecorationsCheck.setSelection(store.getDefaultBoolean(DBeaverPreferences.UI_SHOW_HOLIDAY_DECORATIONS));
 
-        notifyBooleanStylesChanged(BooleanStyleSet.getDefaultStyleSet());
+        notifyBooleanStylesChanged(BooleanStyleSet.getDefaultStyleSet(getControl().getDisplay()));
 
         super.performDefaults();
     }
@@ -403,7 +404,7 @@ public class PrefPageMiscellaneous extends PrefPageMiscellaneousAbstract impleme
                     }
                     switch (event.getProperty()) {
                         case PROP_MODE:
-                            // Color is only applicable to text-based comboboxes
+                            // Color is only applicable to text-based combo boxes
                             selector.setEnabled(event.getNewValue() == BooleanMode.TEXT);
                             break;
                         case PROP_COLOR:

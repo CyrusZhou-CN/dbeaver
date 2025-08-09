@@ -122,8 +122,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 /**
@@ -266,9 +266,10 @@ public class ResultSetViewer extends Viewer
         }
 
         loadPresentationSettings();
-        isDarkHighContrast = UIStyles.isDarkHighContrastTheme();
-        this.defaultBackground = isDarkHighContrast ? UIStyles.getDefaultWidgetBackground() : UIStyles.getDefaultTextBackground();
-        this.defaultForeground = isDarkHighContrast ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground();
+        Display display = parent.getDisplay();
+        isDarkHighContrast = UIStyles.isDarkHighContrastTheme(display);
+        this.defaultBackground = isDarkHighContrast ? UIStyles.getDefaultWidgetBackground(display) : UIStyles.getDefaultTextBackground(display);
+        this.defaultForeground = isDarkHighContrast ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground(display);
 
         long decoratorFeatures = decorator.getDecoratorFeatures();
 
@@ -734,7 +735,8 @@ public class ResultSetViewer extends Viewer
         if (filtersPanel == null) {
             return defaultBackground;
         }
-        return isDarkHighContrast ? UIStyles.getDefaultWidgetBackground() : UIStyles.getDefaultTextBackground();
+        Display display = getControl().getDisplay();
+        return isDarkHighContrast ? UIStyles.getDefaultWidgetBackground(display) : UIStyles.getDefaultTextBackground(display);
     }
 
     @NotNull
@@ -743,7 +745,7 @@ public class ResultSetViewer extends Viewer
         if (filtersPanel == null) {
             return defaultForeground;
         }
-        return UIStyles.getDefaultTextForeground();
+        return UIStyles.getDefaultTextForeground(getControl().getDisplay());
     }
 
     public void persistConfig() {
@@ -1904,7 +1906,7 @@ public class ResultSetViewer extends Viewer
 
             resultSetSize = new Text(statusBar, SWT.BORDER);
             resultSetSize.setLayoutData(new RowData(5 * fontHeight, SWT.DEFAULT));
-            resultSetSize.setBackground(UIStyles.getDefaultTextBackground());
+            resultSetSize.setBackground(UIStyles.getDefaultTextBackground(statusBar.getDisplay()));
             resultSetSize.setToolTipText(DataEditorsMessages.resultset_segment_size);
             resultSetSize.addFocusListener(new FocusAdapter() {
                 @Override

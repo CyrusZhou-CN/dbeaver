@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class EditTaskVariablesDialog extends StatusDialog {
         viewer = new TreeViewer(paramsComposite, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         viewer.getTree().setLayoutData(gd);
         viewer.getTree().setHeaderVisible(true);
-        viewer.getTree().setLinesVisible(!UIStyles.isDarkTheme());
+        viewer.getTree().setLinesVisible(!UIStyles.isDarkTheme(parent.getDisplay()));
         viewer.setContentProvider(new TreeContentProvider() {
             @Override
             public Object[] getChildren(Object parent) {

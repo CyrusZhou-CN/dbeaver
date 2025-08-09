@@ -75,7 +75,7 @@ public class SQLEditorSourceViewerConfiguration extends TextSourceViewerConfigur
     private final IPreferenceStore preferenceStore;
 
     private IContentAssistProcessor completionProcessor;
-    private SQLHyperlinkDetector hyperlinkDetector;
+    private final SQLHyperlinkDetector hyperlinkDetector;
 
     /**
      * This class implements a single token scanner.
@@ -342,7 +342,7 @@ public class SQLEditorSourceViewerConfiguration extends TextSourceViewerConfigur
         @NotNull String colorId
     ) {
         Color color = ruleManager.getColor(colorId);
-        if (UIStyles.isDarkHighContrastTheme()) {
+        if (UIStyles.isDarkHighContrastTheme(editor.getDisplay())) {
             color = UIStyles.getInvertedColor(color);
         }
         addContentTypeDamageRepairer(reconciler, contentType, new SingleTokenScanner(new TextAttribute(color)));

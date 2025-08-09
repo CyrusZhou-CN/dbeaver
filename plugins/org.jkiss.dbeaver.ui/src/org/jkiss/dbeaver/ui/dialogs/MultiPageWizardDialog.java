@@ -505,7 +505,7 @@ public class MultiPageWizardDialog extends TitleAreaDialog implements IWizardCon
             new TreeItem(parentItem, SWT.NONE);
         item.setText(CommonUtils.toString(page.getTitle(), page.getClass().getSimpleName()));
         if (page instanceof IWizardPageNavigable && !((IWizardPageNavigable) page).isPageNavigable()) {
-            int nnColor = UIStyles.isDarkTheme() ?
+            int nnColor = UIStyles.isDarkTheme(getShell().getDisplay()) ?
                 SWT.COLOR_WIDGET_NORMAL_SHADOW : SWT.COLOR_WIDGET_DARK_SHADOW;
             item.setForeground(getShell().getDisplay().getSystemColor(nnColor));
         }

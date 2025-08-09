@@ -23,11 +23,13 @@ import org.eclipse.e4.ui.css.swt.theme.IThemeManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IWorkbenchThemeConstants;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.jkiss.code.NotNull;
+import org.jkiss.code.Nullable;
 import org.jkiss.dbeaver.Log;
 import org.jkiss.utils.CommonUtils;
 import org.osgi.framework.Bundle;
@@ -58,8 +60,8 @@ public class UIStyles {
         return EDITORS_PREFERENCE_STORE;
     }
 
-    public static boolean isDarkTheme() {
-        return UIUtils.isDark(getDefaultTextBackground().getRGB()) || isDarkHighContrastTheme();
+    public static boolean isDarkTheme(@NotNull Device device) {
+        return UIUtils.isDark(getDefaultTextBackground(device).getRGB()) || isDarkHighContrastTheme(device);
     }
 
     private static IThemeEngine getThemeEngine() {
@@ -97,44 +99,57 @@ public class UIStyles {
         }
         return false;
     }
-    
-    public static boolean isDarkHighContrastTheme() {
-        return isHighContrastTheme() && UIUtils.isDark(getDefaultWidgetBackground().getRGB());
+
+    public static boolean isDarkHighContrastTheme(@NotNull Device device) {
+        return isHighContrastTheme() && UIUtils.isDark(getDefaultWidgetBackground(device).getRGB());
     }
 
-    public static Color getDefaultWidgetBackground() {
+    @NotNull
+    public static Color getDefaultWidgetBackground(@NotNull Device device) {
         org.eclipse.ui.themes.ITheme theme = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
         Color color = theme.getColorRegistry().get(IWorkbenchThemeConstants.INACTIVE_TAB_BG_START);
         if (color == null) {
-            color = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+            color = device.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
         }
         return color;
     }
 
-    public static Color getDefaultTextBackground() {
-        return getDefaultTextColor("AbstractTextEditor.Color.Background", SWT.COLOR_LIST_BACKGROUND);
+    @NotNull
+    public static Color getDefaultTextBackground(@NotNull Device device) {
+        return getDefaultTextColor(device, "AbstractTextEditor.Color.Background", SWT.COLOR_LIST_BACKGROUND);
     }
 
-    public static Color getDefaultTextForeground() {
-        return getDefaultTextColor("AbstractTextEditor.Color.Foreground", SWT.COLOR_LIST_FOREGROUND);
+    @NotNull
+    public static Color getDefaultTextForeground(@NotNull Device device) {
+        return getDefaultTextColor(device, "AbstractTextEditor.Color.Foreground", SWT.COLOR_LIST_FOREGROUND);
     }
 
-    public static Color getDefaultTextSelectionBackground() {
-        return getDefaultTextColor("AbstractTextEditor.Color.SelectionBackground", SWT.COLOR_LIST_SELECTION);
+    @NotNull
+    public static Color getDefaultTextSelectionBackground(@NotNull Device device) {
+        return getDefaultTextColor(device, "AbstractTextEditor.Color.SelectionBackground", SWT.COLOR_LIST_SELECTION);
     }
 
-    public static Color getDefaultTextSelectionForeground() {
-        return getDefaultTextColor("AbstractTextEditor.Color.SelectionForeground", SWT.COLOR_LIST_SELECTION_TEXT);
+    @NotNull
+    public static Color getDefaultTextSelectionForeground(@NotNull Device device) {
+        return getDefaultTextColor(device, "AbstractTextEditor.Color.SelectionForeground", SWT.COLOR_LIST_SELECTION_TEXT);
     }
 
-    public static Color getDefaultTextColor(String id, int defSWT) {
+    @NotNull
+    public static Color getDefaultTextColor(@NotNull Device device, String id, int defSWT) {
         IPreferenceStore preferenceStore = getEditorsPreferenceStore();
         String fgRGB = preferenceStore == null ? null : preferenceStore.getString(id);
-        return CommonUtils.isEmpty(fgRGB) ? Display.getDefault().getSystemColor(defSWT) : UIUtils.getSharedColor(fgRGB);
+        if (!CommonUtils.isEmpty(fgRGB)) {
+            Color sharedColor = UIUtils.getSharedColor(fgRGB);
+            if (sharedColor != null) {
+                return sharedColor;
+            }
+        }
+        return device.getSystemColor(defSWT);
     }
 
-    public static Color getErrorTextForeground() {
-        return getDefaultTextColor("AbstractTextEditor.Error.Color.Foreground", SWT.COLOR_RED);
+    @NotNull
+    public static Color getErrorTextForeground(@NotNull Device device) {
+        return getDefaultTextColor(device, "AbstractTextEditor.Error.Color.Foreground", SWT.COLOR_RED);
     }
 
 
@@ -144,13 +159,13 @@ public class UIStyles {
      *
      * Do not dispose returned color.
      */
-    public static Color getContrastColor(Color color) {
+    public static Color getContrastColor(@NotNull Device device, @Nullable Color color) {
         if (color == null) {
             return COLOR_BLACK;
         }
         double luminance = 1 - (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
         if (luminance > 0.5) {
-            return isDarkTheme() ? COLOR_WHITE_DARK : COLOR_WHITE;
+            return isDarkTheme(device) ? COLOR_WHITE_DARK : COLOR_WHITE;
         }
         return COLOR_BLACK;
     }

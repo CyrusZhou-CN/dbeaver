@@ -242,11 +242,11 @@ public class StatisticsNavigatorNodeRenderer extends DefaultNavigatorNodeRendere
         gc.fillRectangle(bounds.x + bounds.width - PERCENT_FILL_WIDTH + 2, bounds.y + 3, width, bounds.height - 6);
 
         // Text
-        if (UIStyles.isDarkHighContrastTheme() && PERCENT_FILL_WIDTH - width < PERCENT_FILL_WIDTH / 2) {
+        if (UIStyles.isDarkHighContrastTheme(gc.getDevice()) && PERCENT_FILL_WIDTH - width < PERCENT_FILL_WIDTH / 2) {
             gc.setForeground(tree.getBackground());
         } else {
             if (CommonUtils.isBitSet(event.detail, SWT.SELECTED)) {
-                gc.setForeground(UIStyles.getDefaultTextSelectionForeground());
+                gc.setForeground(UIStyles.getDefaultTextSelectionForeground(gc.getDevice()));
             } else {
                 gc.setForeground(tree.getForeground());
             }

@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class ValueViewerPanel implements IResultSetPanel, DBPAdaptable {
         viewPlaceholder.setLayout(new FillLayout());
         viewPlaceholder.addPaintListener(e -> {
             if (previewController == null && viewPlaceholder.getChildren().length == 0) {
-                e.gc.setForeground(UIStyles.getDefaultTextForeground());
+                e.gc.setForeground(UIStyles.getDefaultTextForeground(viewPlaceholder.getDisplay()));
                 String hidePanelCmd = ActionUtils.findCommandDescription(
                     ResultSetHandlerMain.CMD_TOGGLE_PANELS,
                     ValueViewerPanel.this.presentation.getController().getSite(),
@@ -113,8 +113,7 @@ public class ValueViewerPanel implements IResultSetPanel, DBPAdaptable {
         });
 */
 
-        if (this.presentation instanceof ISelectionProvider) {
-            final ISelectionProvider selectionProvider = (ISelectionProvider) this.presentation;
+        if (this.presentation instanceof ISelectionProvider selectionProvider) {
             final ISelectionChangedListener selectionListener = event -> {
                 if (ValueViewerPanel.this.presentation.getController().getVisiblePanel() == ValueViewerPanel.this) {
                     refreshValue(false);

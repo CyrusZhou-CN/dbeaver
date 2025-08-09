@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jkiss.dbeaver.ui.dashboard.control;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.ui.RectangleEdge;
@@ -107,7 +108,7 @@ public abstract class DashboardRendererDatabaseChart extends DashboardRendererAb
     }
 
     protected void createDefaultLegend(DashboardItemViewSettings viewConfig, JFreeChart chart) {
-        Color gridColor = AWTUtils.makeAWTColor(UIStyles.getDefaultTextForeground());
+        Color gridColor = AWTUtils.makeAWTColor(UIStyles.getDefaultTextForeground(Display.getCurrent()));
         LegendTitle legend = chart.getLegend();
         legend.setPosition(RectangleEdge.BOTTOM);
         legend.setBorder(0, 0, 0, 0);

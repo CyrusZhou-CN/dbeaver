@@ -66,7 +66,7 @@ public class DefaultColorSelector extends ColorSelector {
             final GC gc = new GC(image);
 
             final Color color = UIUtils.getSharedColor(getColorValue());
-            final Color contrastColor = UIStyles.getContrastColor(color);
+            final Color contrastColor = UIStyles.getContrastColor(button.getDisplay(), color);
             final Color blendedColor = UIUtils.getSharedColor(UIUtils.blend(color.getRGB(), contrastColor.getRGB(), 50));
 
             // Draw overlay and cross with contrast color

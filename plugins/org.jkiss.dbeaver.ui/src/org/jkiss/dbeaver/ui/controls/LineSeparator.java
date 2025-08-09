@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.jkiss.dbeaver.ui.UIStyles;
 
 /**
@@ -36,8 +37,9 @@ public class LineSeparator extends Composite {
         }
         addPaintListener(e -> {
             Point size = LineSeparator.this.getSize();
-            e.gc.setBackground(getDisplay().getSystemColor(
-                UIStyles.isDarkTheme() ? SWT.COLOR_WIDGET_NORMAL_SHADOW : SWT.COLOR_WIDGET_NORMAL_SHADOW));
+            Display display = getDisplay();
+            e.gc.setBackground(display.getSystemColor(
+                UIStyles.isDarkTheme(display) ? SWT.COLOR_WIDGET_NORMAL_SHADOW : SWT.COLOR_WIDGET_NORMAL_SHADOW));
             e.gc.fillRectangle(0, 0, size.x, size.y);
         });
     }

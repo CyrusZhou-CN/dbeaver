@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
@@ -101,14 +102,14 @@ public class BooleanStyleSet {
         return defaultColor;
     }
 
-    public static BooleanStyleSet getDefaultStyles(@NotNull DBPPreferenceStore store) {
+    public static BooleanStyleSet getDefaultStyles(@NotNull DBPPreferenceStore store, @NotNull Device device) {
         final BooleanMode mode = CommonUtils.valueOf(BooleanMode.class, store.getString(PREF_BOOLEAN_STYLE + ".mode"));
-        return getDefaultStyles(store, mode);
+        return getDefaultStyles(store, device, mode);
     }
 
     @NotNull
-    public static BooleanStyleSet getDefaultStyles(@NotNull DBPPreferenceStore store, @Nullable BooleanMode mode) {
-        final RGB defaultColor = UIStyles.getDefaultTextForeground().getRGB();
+    public static BooleanStyleSet getDefaultStyles(@NotNull DBPPreferenceStore store, @NotNull Device device, @Nullable BooleanMode mode) {
+        final RGB defaultColor = UIStyles.getDefaultTextForeground(device).getRGB();
 
         if (mode != null) {
             return new BooleanStyleSet(
@@ -133,8 +134,8 @@ public class BooleanStyleSet {
      * @return Default styles set
      */
     @NotNull
-    public static BooleanStyleSet getDefaultStyleSet() {
-        final RGB defaultColor = UIStyles.getDefaultTextForeground().getRGB();
+    public static BooleanStyleSet getDefaultStyleSet(@NotNull Device device) {
+        final RGB defaultColor = UIStyles.getDefaultTextForeground(device).getRGB();
 
         return new BooleanStyleSet(
             getDefaultStyle(BooleanState.CHECKED, defaultColor),
@@ -152,9 +153,8 @@ public class BooleanStyleSet {
     }
 
     public static void installStyleChangeListener(@NotNull Control control, @NotNull IPropertyChangeListener listener) {
-        final DBPPreferenceListener preferenceListener = e -> {
-            listener.propertyChange(new PropertyChangeEvent(e.getSource(), e.getProperty(), e.getOldValue(), e.getNewValue()));
-        };
+        final DBPPreferenceListener preferenceListener = e -> listener.propertyChange(
+            new PropertyChangeEvent(e.getSource(), e.getProperty(), e.getOldValue(), e.getNewValue()));
 
         PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(listener);
         DBWorkbench.getPlatform().getPreferenceStore().addPropertyChangeListener(preferenceListener);
@@ -195,19 +195,27 @@ public class BooleanStyleSet {
 
     @NotNull
     private static BooleanStyle getDefaultStyleLegacy(@NotNull DBPPreferenceStore store, @NotNull BooleanState state, @NotNull RGB color) {
-        switch (store.getString(PREF_BOOLEAN_STYLE)) {
-            case PROP_LEGACY_STYLE_ICON:
-                return BooleanStyle.usingIcon(state.choose(UIIcon.CHECK_ON, UIIcon.CHECK_OFF, UIIcon.CHECK_QUEST), UIElementAlignment.CENTER);
-            case PROP_LEGACY_STYLE_CHECKBOX:
-                return BooleanStyle.usingText(state.choose("☑", "☐", "☒"), UIElementAlignment.CENTER, color, UIElementFontStyle.NORMAL);
-            case PROP_LEGACY_STYLE_TRUE_FALSE:
-                return BooleanStyle.usingText(state.choose("true", "false", DBConstants.NULL_VALUE_LABEL), UIElementAlignment.CENTER, color, UIElementFontStyle.NORMAL);
-            case PROP_LEGACY_STYLE_YES_NO:
-                return BooleanStyle.usingText(state.choose("yes", "no", DBConstants.NULL_VALUE_LABEL), UIElementAlignment.CENTER, color, UIElementFontStyle.NORMAL);
-            case PROP_LEGACY_STYLE_TEXTBOX:
-            default:
-                return BooleanStyle.usingText(state.choose("[v]", "[ ]", DBConstants.NULL_VALUE_LABEL), UIElementAlignment.CENTER, color, UIElementFontStyle.NORMAL);
-        }
+        return switch (store.getString(PREF_BOOLEAN_STYLE)) {
+            case PROP_LEGACY_STYLE_ICON ->
+                BooleanStyle.usingIcon(state.choose(UIIcon.CHECK_ON, UIIcon.CHECK_OFF, UIIcon.CHECK_QUEST), UIElementAlignment.CENTER);
+            case PROP_LEGACY_STYLE_CHECKBOX ->
+                BooleanStyle.usingText(state.choose("☑", "☐", "☒"), UIElementAlignment.CENTER, color, UIElementFontStyle.NORMAL);
+            case PROP_LEGACY_STYLE_TRUE_FALSE -> BooleanStyle.usingText(state.choose("true", "false", DBConstants.NULL_VALUE_LABEL),
+                UIElementAlignment.CENTER,
+                color,
+                UIElementFontStyle.NORMAL
+            );
+            case PROP_LEGACY_STYLE_YES_NO -> BooleanStyle.usingText(state.choose("yes", "no", DBConstants.NULL_VALUE_LABEL),
+                UIElementAlignment.CENTER,
+                color,
+                UIElementFontStyle.NORMAL
+            );
+            default -> BooleanStyle.usingText(state.choose("[v]", "[ ]", DBConstants.NULL_VALUE_LABEL),
+                UIElementAlignment.CENTER,
+                color,
+                UIElementFontStyle.NORMAL
+            );
+        };
     }
 
     private static void setDefaultStyle(@NotNull DBPPreferenceStore store, @NotNull BooleanStyle style, @NotNull BooleanState state, @NotNull RGB defaultColor) {

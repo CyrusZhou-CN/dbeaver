@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -87,7 +88,11 @@ class SpreadsheetFindReplaceTarget implements IFindReplaceTarget, IFindReplaceTa
     public static synchronized SpreadsheetFindReplaceTarget getInstance() {
         if (instance == null) {
             instance = new SpreadsheetFindReplaceTarget();
-            instance.scopeHighlightColor = UIStyles.getDefaultTextColor("AbstractTextEditor.Color.FindScope", SWT.COLOR_LIST_SELECTION);
+            instance.scopeHighlightColor = UIStyles.getDefaultTextColor(
+                Display.getDefault(),
+                "AbstractTextEditor.Color.FindScope",
+                SWT.COLOR_LIST_SELECTION
+            );
         }
         return instance;
     }

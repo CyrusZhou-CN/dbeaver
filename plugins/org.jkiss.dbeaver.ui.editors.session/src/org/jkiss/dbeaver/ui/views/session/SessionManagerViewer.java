@@ -35,6 +35,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchSite;
@@ -208,8 +209,9 @@ public class SessionManagerViewer<SESSION_TYPE extends DBAServerSession>
                             Class<?> detailsType = detailsInfo.getDetailsType();
                             if (DBPObjectWithDescription.class.isAssignableFrom(detailsType)) {
                                 StyledText text = new StyledText(detailsFolder, SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
-                                text.setForeground(UIStyles.getDefaultTextForeground());
-                                text.setBackground(UIStyles.getDefaultTextBackground());
+                                Display display = text.getDisplay();
+                                text.setForeground(UIStyles.getDefaultTextForeground(display));
+                                text.setBackground(UIStyles.getDefaultTextBackground(display));
                                 text.setFont(UIUtils.getMonospaceFont());
                                 text.setData(detailsInfo);
                                 extDetailsItem.setControl(text);

@@ -30,6 +30,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.jkiss.code.NotNull;
 import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.model.DBIcon;
@@ -69,13 +70,9 @@ public class AssociationPart extends PropertyAwareConnectionPart {
 
     private ERDHighlightingHandle associatedAttributesHighlighing = null;
     protected AccessibleGraphicalEditPart accPart;
-    private final Color labelForegroundColor;
+    private Color labelForegroundColor;
 
     public AssociationPart() {
-        Color foreground = ERDThemeSettings.instance.attrForeground;
-        final Color contrastColor = UIStyles.getContrastColor(foreground);
-        final RGB labelForeground = UIUtils.blend(foreground.getRGB(), contrastColor.getRGB(), 60);
-        labelForegroundColor = UIUtils.getSharedColor(labelForeground);
     }
 
     public ERDAssociation getAssociation() {
@@ -213,11 +210,23 @@ public class AssociationPart extends PropertyAwareConnectionPart {
             Color background = getParent().getViewer().getControl().getBackground();
             ERDNotation notation = diagramNotationDescriptor.getNotation();
             if (notation != null) {
-                notation.applyNotationForArrows(monitor, conn, getAssociation(), background, labelForegroundColor);
+                notation.applyNotationForArrows(monitor, conn, getAssociation(), background, getLabelForegroundColor(conn));
             } else {
                 log.error("ERD notation instance not created for id: " + diagramNotationDescriptor.getId());
             }
         }
+    }
+
+    private Color getLabelForegroundColor(PolylineConnection conn) {
+        if (labelForegroundColor == null) {
+            Color foreground = ERDThemeSettings.instance.attrForeground;
+            ERDEditorPart editor = getDiagramPart().getEditor();
+            Display display = editor == null ? Display.getCurrent() : editor.getViewer().getControl().getDisplay();
+            final Color contrastColor = UIStyles.getContrastColor(display, foreground);
+            final RGB labelForeground = UIUtils.blend(foreground.getRGB(), contrastColor.getRGB(), 60);
+            labelForegroundColor = UIUtils.getSharedColor(labelForeground);
+        }
+        return labelForegroundColor;
     }
 
     protected void setConnectionToolTip(

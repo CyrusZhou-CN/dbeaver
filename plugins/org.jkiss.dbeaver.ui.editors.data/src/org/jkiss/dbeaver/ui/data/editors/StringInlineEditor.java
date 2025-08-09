@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.jkiss.code.Nullable;
 import org.jkiss.dbeaver.DBException;
@@ -61,8 +62,10 @@ public class StringInlineEditor extends BaseValueEditor<Control> {
             //editor.setTextLimit(MAX_STRING_LENGTH);
             editor.setEditable(!valueController.isReadOnly());
             editor.setFont(UIUtils.getMonospaceFont());
-            editor.setBackground(UIStyles.getDefaultTextBackground());
-            editor.setForeground(UIStyles.getDefaultTextForeground());
+
+            Display display = editor.getDisplay();
+            editor.setBackground(UIStyles.getDefaultTextBackground(display));
+            editor.setForeground(UIStyles.getDefaultTextForeground(display));
             StyledTextUtils.fillDefaultStyledTextContextMenu(editor);
             return editor;
         }

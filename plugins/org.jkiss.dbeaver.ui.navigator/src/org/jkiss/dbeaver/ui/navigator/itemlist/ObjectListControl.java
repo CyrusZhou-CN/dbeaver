@@ -131,7 +131,7 @@ public abstract class ObjectListControl<OBJECT_TYPE> extends ProgressPageControl
         };
 
         boolean showTableGrid = DBWorkbench.getPlatform().getPreferenceStore().getBoolean(NavigatorPreferences.NAVIGATOR_EDITOR_SHOW_TABLE_GRID);
-        if (UIStyles.isDarkTheme()) {
+        if (UIStyles.isDarkTheme(getDisplay())) {
             // Do not show grid in dark theme. It is awful
             showTableGrid = false;
         }

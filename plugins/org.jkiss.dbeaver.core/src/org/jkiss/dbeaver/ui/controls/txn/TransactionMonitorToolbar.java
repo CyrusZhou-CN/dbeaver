@@ -169,7 +169,7 @@ public class TransactionMonitorToolbar {
             final int updateCount = txnState == null ? 0 : txnState.getUpdateCount();
 
             if (txnState == null || !txnState.isTransactionMode()) {
-                bg = UIStyles.getDefaultTextBackground();
+                bg = UIStyles.getDefaultTextBackground(e.display);
             } else if (updateCount == 0) {
                 bg = QueryLogThemeSettings.instance.colorTransaction;
             } else {
@@ -204,7 +204,7 @@ public class TransactionMonitorToolbar {
                 count = "None";
             }
             final Point textSize = e.gc.textExtent(count);
-            e.gc.setForeground(UIStyles.getDefaultTextForeground());
+            e.gc.setForeground(UIStyles.getDefaultTextForeground(e.display));
             e.gc.drawString(count, bounds.x + (bounds.width - textSize.x) / 2 - 2, bounds.y + (bounds.height - textSize.y) / 2 - 1);
         }
 

@@ -2300,8 +2300,8 @@ public class UIUtils {
         final int centerX = x - size.x / 2;
         final int centerY = y - size.y;
 
-        gc.setForeground(UIStyles.getDefaultTextForeground());
-        gc.setBackground(UIStyles.getDefaultTextBackground());
+        gc.setForeground(UIStyles.getDefaultTextForeground(gc.getDevice()));
+        gc.setBackground(UIStyles.getDefaultTextBackground(gc.getDevice()));
 
         gc.fillRectangle(centerX - 2, centerY - 2, size.x + 4, size.y + 4);
         gc.drawText(text, centerX, centerY, true);
@@ -2313,12 +2313,7 @@ public class UIUtils {
             return;
         }
         if (widget instanceof Combo || widget instanceof CCombo) {
-            widget.addListener(SWT.Selection, new TypedListener(new SelectionAdapter() {
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    onFocusLost.run();
-                }
-            }));
+            widget.addListener(SWT.Selection, event -> onFocusLost.run());
         } else {
             widget.addDisposeListener(e -> onFocusLost.run());
         }

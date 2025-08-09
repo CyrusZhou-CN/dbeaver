@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,13 +58,8 @@ public class CustomCheckboxCellEditor extends CellEditor implements BooleanStyle
     public CustomCheckboxCellEditor(Composite parent, boolean changeOnActivate) {
         super(parent);
         this.changeOnActivate = changeOnActivate;
-        if (!changeOnActivate) {
-            // added to prevent checkbox flickering when the changeOnActivate is set to true
-            checkBox.setBackground(parent.getBackground());
-            checkBox.getParent().setBackground(parent.getBackground());
-        }
         final IPropertyChangeListener styleChangeListener = event -> {
-            booleanStyles = BooleanStyleSet.getDefaultStyles(DBWorkbench.getPlatform().getPreferenceStore());
+            booleanStyles = BooleanStyleSet.getDefaultStyles(DBWorkbench.getPlatform().getPreferenceStore(), parent.getDisplay());
         };
 
         BooleanStyleSet.installStyleChangeListener(parent, styleChangeListener);
@@ -81,6 +76,12 @@ public class CustomCheckboxCellEditor extends CellEditor implements BooleanStyle
 
         checkBox = new Label(ph, SWT.NONE);
         checkBox.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, true));
+        if (!changeOnActivate) {
+            // added to prevent checkbox flickering when the changeOnActivate is set to true
+            checkBox.setBackground(parent.getBackground());
+            checkBox.getParent().setBackground(parent.getBackground());
+        }
+
         ph.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {

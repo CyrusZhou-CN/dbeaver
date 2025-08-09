@@ -705,18 +705,18 @@ public class TabbedFolderList extends Composite {
         Display display = Display.getCurrent();
         ISharedTextColors sharedColors = UIUtils.getSharedTextColors();
 
-        listBackground = UIStyles.getDefaultTextBackground();
+        listBackground = UIStyles.getDefaultTextBackground(display);
         Color widgetBackground;
-        if (UIStyles.isDarkTheme()) {
+        if (UIStyles.isDarkTheme(display)) {
             // By some reason E4 sets white background in dark theme.
-            widgetBackground = UIStyles.getDefaultWidgetBackground();
+            widgetBackground = UIStyles.getDefaultWidgetBackground(display);
             super.setBackground(widgetBackground);
             topNavigationElement.setBackground(widgetBackground);
             bottomNavigationElement.setBackground(widgetBackground);
         } else {
             widgetBackground = getBackground();
         }
-        widgetForeground = UIStyles.isDarkHighContrastTheme() ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground();
+        widgetForeground = UIStyles.isDarkHighContrastTheme(display) ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground(display);
         widgetDarkShadow = display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
         widgetNormalShadow = display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
 

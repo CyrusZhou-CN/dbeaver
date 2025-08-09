@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import org.jkiss.dbeaver.model.DBPImage;
 import org.jkiss.dbeaver.model.app.DBPProject;
 import org.jkiss.dbeaver.model.dashboard.DBDashboardMapQuery;
 import org.jkiss.dbeaver.model.dashboard.DBDashboardQuery;
-import org.jkiss.dbeaver.model.dashboard.DashboardIcons;
 import org.jkiss.dbeaver.model.dashboard.data.DashboardDataset;
 import org.jkiss.dbeaver.model.dashboard.registry.DashboardItemConfiguration;
 import org.jkiss.dbeaver.ui.ActionUtils;
@@ -86,8 +85,9 @@ public class DashboardViewItem extends Composite implements DashboardItemContain
         layout.horizontalSpacing = 0;
         this.setLayout(layout);
 
-        Color defFG = UIStyles.getDefaultTextForeground();
-        Color defBG = UIStyles.getDefaultTextBackground();
+        Display display = getDisplay();
+        Color defFG = UIStyles.getDefaultTextForeground(display);
+        Color defBG = UIStyles.getDefaultTextBackground(display);
         //this.setForeground(defFG);
         this.setBackground(defBG);
 
@@ -101,7 +101,7 @@ public class DashboardViewItem extends Composite implements DashboardItemContain
             gridLayout.marginWidth = 3;
             titleComposite.setLayout(gridLayout);
 
-            DBPImage icon = DashboardIcons.DASHBOARD;
+            DBPImage icon;
             DBPDataSourceContainer dataSourceContainer = getDataSourceContainer();
             if (item.getDashboardProvider().isDatabaseRequired() && dataSourceContainer != null) {
                 icon = dataSourceContainer.getDriver().getIcon();
@@ -162,9 +162,7 @@ public class DashboardViewItem extends Composite implements DashboardItemContain
 
     private void createContextMenu(Control control) {
         MenuManager menuMgr = new MenuManager(null, getItemDescriptor().getId() + "_context_menu");
-        menuMgr.addMenuListener(manager -> {
-            fillDashboardContextMenu(menuMgr, false);
-        });
+        menuMgr.addMenuListener(manager -> fillDashboardContextMenu(menuMgr, false));
         Menu menu = menuMgr.createContextMenu(this);
         menuMgr.setRemoveAllWhenShown(true);
         control.setMenu(menu);

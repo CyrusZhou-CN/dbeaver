@@ -156,7 +156,7 @@ public class DatabaseNavigatorLabelProvider extends ColumnLabelProvider implemen
             if (dbnNode instanceof DBNDataSource dbnDataSource) {
                 DBPDataSourceContainer ds = dbnDataSource.getDataSourceContainer();
                 Color bgColor = UIUtils.getConnectionColor(ds.getConnectionConfiguration());
-                return bgColor == null ? null : UIStyles.getContrastColor(bgColor);
+                return bgColor == null ? null : UIStyles.getContrastColor(tree.getDisplay(), bgColor);
             }
             if (dbnNode.isLocked()) {
                 return lockedForeground;

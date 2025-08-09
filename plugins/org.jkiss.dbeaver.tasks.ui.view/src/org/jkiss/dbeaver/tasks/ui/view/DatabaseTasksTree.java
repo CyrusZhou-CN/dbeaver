@@ -78,7 +78,7 @@ public class DatabaseTasksTree {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); //$NON-NLS-1$
         dateFormat.setTimeZone(TimeZone.getTimeZone(TimezoneRegistry.getUserDefaultTimezone()));
         colorError = BaseThemeSettings.instance.colorError;
-        colorErrorForeground = UIStyles.getContrastColor(colorError);
+        colorErrorForeground = UIStyles.getContrastColor(composite.getDisplay(), colorError);
         
         taskViewer = DialogUtils.createFilteredTree(composite,
             SWT.MULTI | SWT.FULL_SELECTION | (selector ? SWT.BORDER | SWT.CHECK : SWT.NONE),

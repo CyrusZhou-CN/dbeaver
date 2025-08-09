@@ -43,8 +43,10 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
@@ -601,7 +603,7 @@ public abstract class SQLEditorBase extends BaseTextEditor implements
         return fSourceViewerDecorationSupport;
     }
 
-    protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+    protected void configureSourceViewerDecorationSupport(@NotNull SourceViewerDecorationSupport support) {
         char[] matchChars = SQLConstants.BRACKETS; //which brackets to match
         try {
             characterPairMatcher = new SQLCharacterPairMatcher(this, matchChars,
@@ -623,8 +625,11 @@ public abstract class SQLEditorBase extends BaseTextEditor implements
 
         super.configureSourceViewerDecorationSupport(support);
 
-        if (UIStyles.isDarkHighContrastTheme()) {
-            support.setCursorLinePainterPreferenceKeys(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_CURRENT_LINE, ThemeConstants.COLOR_SQL_RESULT_LINES_SELECTED);
+        if (UIStyles.isDarkHighContrastTheme(this.getDisplay())) {
+            support.setCursorLinePainterPreferenceKeys(
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_CURRENT_LINE,
+                ThemeConstants.COLOR_SQL_RESULT_LINES_SELECTED
+            );
         }
     }
 
@@ -658,6 +663,11 @@ public abstract class SQLEditorBase extends BaseTextEditor implements
         }
     }
 */
+
+    public Display getDisplay() {
+        IWorkbenchPartSite site = getSite();
+        return site != null ? site.getShell().getDisplay() : Display.getCurrent();
+    }
 
     @SuppressWarnings("unchecked")
     @Override

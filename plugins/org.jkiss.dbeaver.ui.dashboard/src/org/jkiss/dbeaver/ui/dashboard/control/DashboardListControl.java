@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,8 +77,8 @@ public class DashboardListControl extends Composite implements DashboardGroupCon
 
         addDisposeListener(e -> boldFont.dispose());
 
-        this.setForeground(UIStyles.getDefaultTextForeground());
-        this.setBackground(UIStyles.getDefaultTextBackground());
+        this.setForeground(UIStyles.getDefaultTextForeground(getDisplay()));
+        this.setBackground(UIStyles.getDefaultTextBackground(getDisplay()));
 
         GridLayout layout = new GridLayout(1, true);
         this.setLayout(layout);
@@ -270,7 +270,7 @@ public class DashboardListControl extends Composite implements DashboardGroupCon
             return;
         }
         if (selectedItem == null) {
-            setSelection(items.get(0));
+            setSelection(items.getFirst());
         } else {
             int curIndex = items.indexOf(selectedItem);
             curIndex += delta;

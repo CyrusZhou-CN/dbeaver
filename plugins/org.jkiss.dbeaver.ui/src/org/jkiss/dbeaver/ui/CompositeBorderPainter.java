@@ -21,7 +21,6 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 public class CompositeBorderPainter implements PaintListener {
     private final Control control;
@@ -34,7 +33,7 @@ public class CompositeBorderPainter implements PaintListener {
     @Override
     public void paintControl(PaintEvent e) {
         Rectangle bounds = control.getBounds();
-        e.gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+        e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
         e.gc.drawRectangle(0, 0, bounds.width - 1, bounds.height - 1);
     }
 }

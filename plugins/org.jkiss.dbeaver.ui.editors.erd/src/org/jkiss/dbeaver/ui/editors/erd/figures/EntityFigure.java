@@ -19,6 +19,7 @@ package org.jkiss.dbeaver.ui.editors.erd.figures;
 import org.eclipse.draw2d.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.jkiss.code.NotNull;
 import org.jkiss.dbeaver.model.DBPDataSourceContainer;
 import org.jkiss.dbeaver.model.DBPEvaluationContext;
@@ -47,9 +48,9 @@ import java.util.List;
 public class EntityFigure extends Figure {
 
     private final EntityPart part;
-    private AttributeListFigure keyFigure;
-    private AttributeListFigure attributeFigure;
-    private EditableLabel nameLabel;
+    private final AttributeListFigure keyFigure;
+    private final AttributeListFigure attributeFigure;
+    private final EditableLabel nameLabel;
     private Label descLabel;
 
     public EntityFigure(EntityPart part)
@@ -201,9 +202,10 @@ public class EntityFigure extends Figure {
                 descLabel.setForegroundColor(ERDThemeSettings.instance.entityNameForeground);
             }
         } else {
-            nameLabel.setForegroundColor(UIStyles.getContrastColor(bgColor));
+            Display display = Display.getCurrent();
+            nameLabel.setForegroundColor(UIStyles.getContrastColor(display, bgColor));
             if (descLabel != null) {
-                descLabel.setForegroundColor(UIStyles.getContrastColor(bgColor));
+                descLabel.setForegroundColor(UIStyles.getContrastColor(display, bgColor));
             }
         }
 
@@ -286,8 +288,7 @@ public class EntityFigure extends Figure {
     // Workaround: attribute figures aren't direct children of entity figure
     @Override
     public void remove(IFigure figure) {
-        if (figure instanceof AttributeItemFigure) {
-            AttributeItemFigure attrFigure = (AttributeItemFigure) figure;
+        if (figure instanceof AttributeItemFigure attrFigure) {
             AttributeListFigure listFigure;
             if (keyFigure.getAttributes().contains(figure)) {
                 listFigure = keyFigure;

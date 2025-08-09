@@ -169,9 +169,7 @@ public class VerticalButton extends Canvas {
     private void setImage(ImageDescriptor imageDescriptor) {
         if (imageDescriptor != null) {
             this.image = imageDescriptor.createImage(true);
-            addDisposeListener(e -> {
-                UIUtils.dispose(image);
-            });
+            addDisposeListener(e -> UIUtils.dispose(image));
         }
     }
 
@@ -299,7 +297,7 @@ public class VerticalButton extends Canvas {
         if (!CommonUtils.isEmpty(text)) {
             final Point bounds = e.gc.textExtent(text);
             e.gc.setAntialias(SWT.ON);
-            e.gc.setForeground(isDarkBG ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground());
+            e.gc.setForeground(isDarkBG ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground(e.display));
             e.gc.drawString(this.text, offset, (size.x - bounds.y) / 2);
         }
 
