@@ -83,7 +83,7 @@ public class UIStyles {
         return themeEngine;
     }
 
-    public static boolean isHighContrastTheme() {
+    public static boolean isHighContrastTheme(@NotNull Device device) {
         IThemeEngine themeEngine = getThemeEngine();
         org.eclipse.e4.ui.css.swt.theme.ITheme theme = null;
         if (themeEngine != null) {
@@ -101,7 +101,7 @@ public class UIStyles {
     }
 
     public static boolean isDarkHighContrastTheme(@NotNull Device device) {
-        return isHighContrastTheme() && UIUtils.isDark(getDefaultWidgetBackground(device).getRGB());
+        return isHighContrastTheme(device) && UIUtils.isDark(getDefaultWidgetBackground(device).getRGB());
     }
 
     @NotNull

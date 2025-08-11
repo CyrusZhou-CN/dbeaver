@@ -1949,6 +1949,7 @@ public class UIUtils {
         try {
             return PlatformUI.getWorkbench().getDisplay();
         } catch (Exception e) {
+            log.debug("Error getting workbench display: " + e.getMessage());
             return Display.getDefault();
         }
     }

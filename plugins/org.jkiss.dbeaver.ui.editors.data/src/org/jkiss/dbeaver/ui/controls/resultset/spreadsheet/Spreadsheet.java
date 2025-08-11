@@ -486,7 +486,7 @@ public class Spreadsheet extends LightGrid implements Listener {
             if (!oldEditor.isDisposed()) {
                 oldEditor.dispose();
                 UIUtils.asyncExec(() -> {
-                    if (UIUtils.getDisplay().getFocusControl() == null) {
+                    if (getDisplay().getFocusControl() == null) {
                         // Set focus to spreadsheet only i
                         // #5949
                         setFocus();

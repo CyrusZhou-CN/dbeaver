@@ -901,7 +901,8 @@ public class SpreadsheetPresentation extends AbstractPresentation
         if (spreadsheet.isDisposed()) {
             return;
         }
-        isHighContrastTheme = UIStyles.isHighContrastTheme();
+        Display display = spreadsheet.getDisplay();
+        isHighContrastTheme = UIStyles.isHighContrastTheme(display);
 
         // Cache preferences
         DBPPreferenceStore preferenceStore = getPreferenceStore();
@@ -924,7 +925,7 @@ public class SpreadsheetPresentation extends AbstractPresentation
         calcColumnWidthByValue = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_CALC_COLUMN_WIDTH_BY_VALUES);
         showBooleanAsCheckbox = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_BOOLEAN_AS_CHECKBOX);
         showWhitespaceCharacters = preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_SHOW_WHITESPACE_CHARACTERS);
-        booleanStyles = BooleanStyleSet.getDefaultStyles(preferenceStore, spreadsheet.getDisplay());
+        booleanStyles = BooleanStyleSet.getDefaultStyles(preferenceStore, display);
         useNativeNumbersFormat = preferenceStore.getBoolean(ModelPreferences.RESULT_NATIVE_NUMERIC_FORMAT);
 
         spreadsheet.setColumnScrolling(!preferenceStore.getBoolean(ResultSetPreferences.RESULT_SET_USE_SMOOTH_SCROLLING));

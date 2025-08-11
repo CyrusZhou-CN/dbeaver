@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,7 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.ImageTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.jkiss.code.NotNull;
@@ -94,7 +91,7 @@ public class GISLeafletViewer implements IGeometryValueEditor, DBPPreferenceList
     private static final String PROP_SRID = "gis.srid";
     private static final int UNDEFINED_SRID = -1;
 
-    private volatile boolean browserCreating = false;
+    private volatile boolean browserCreating;
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeHierarchyAdapter(DBDContent.class, new DBDContentAdapter()).create();
@@ -113,7 +110,7 @@ public class GISLeafletViewer implements IGeometryValueEditor, DBPPreferenceList
 
     private boolean toolsVisible = true;
     private boolean showLabels;
-    private boolean flipCoordinates = false;
+    private boolean flipCoordinates;
     private final Composite composite;
 
     public GISLeafletViewer(Composite parent, @NotNull DBDAttributeBinding[] bindings, @Nullable SpatialDataProvider spatialDataProvider, @Nullable IResultSetPresentation presentation) {
@@ -255,7 +252,7 @@ public class GISLeafletViewer implements IGeometryValueEditor, DBPPreferenceList
             GISEditorUtils.curRecentSRIDs();
             StringBuilder sridListStr = new StringBuilder();
             for (Integer sridInt : GISEditorUtils.getRecentSRIDs()) {
-                if (sridListStr.length() > 0) sridListStr.append(",");
+                if (!sridListStr.isEmpty()) sridListStr.append(",");
                 sridListStr.append(sridInt);
             }
             GISViewerActivator.getDefault().getPreferences().setValue(PREF_RECENT_SRID_LIST, sridListStr.toString());
@@ -768,14 +765,19 @@ public class GISLeafletViewer implements IGeometryValueEditor, DBPPreferenceList
             }
             imageData = GISBrowserImageUtils.getControlScreenshotOnWindows(browser);
         } else {
-            Image image = new Image(Display.getDefault(), browser.getBounds());
-            GC gc = new GC(image);
+            Point size = browser.getSize();
+            Image image = new Image(Display.getDefault(), size.x, size.y);
             try {
-                browser.print(gc);
+                GC gc = new GC(image);
+                try {
+                    browser.print(gc);
+                } finally {
+                    gc.dispose();
+                }
+                imageData = image.getImageData();
             } finally {
-                gc.dispose();
+                image.dispose();
             }
-            imageData = image.getImageData();
         }
 
         toolsVisible = toolsVisibility;

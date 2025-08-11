@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.jkiss.code.NotNull;
@@ -117,8 +116,8 @@ public class DBeaverPartList extends BasicPartList {
         private final Font italicBoldFont;
 
         public CellLabelProvider() {
-            this.italicFont = UIUtils.modifyFont(Display.getDefault().getSystemFont(), SWT.ITALIC);
-            this.italicBoldFont = UIUtils.modifyFont(Display.getDefault().getSystemFont(), SWT.BOLD | SWT.ITALIC);
+            this.italicFont = UIUtils.modifyFont(getShell().getDisplay().getSystemFont(), SWT.ITALIC);
+            this.italicBoldFont = UIUtils.modifyFont(getShell().getDisplay().getSystemFont(), SWT.BOLD | SWT.ITALIC);
         }
 
         @Nullable
