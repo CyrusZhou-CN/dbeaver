@@ -726,7 +726,7 @@ public class TabbedFolderList extends ConComposite {
         Color widgetBackground;
         if (UIStyles.isDarkTheme()) {
             // By some reason E4 sets white background in dark theme.
-            widgetBackground = UIStyles.getDefaultWidgetBackground();
+            widgetBackground = BaseThemeSettings.instance.colorWidgetBackground;
             super.setBackground(widgetBackground);
             topNavigationElement.setBackground(widgetBackground);
             bottomNavigationElement.setBackground(widgetBackground);

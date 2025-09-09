@@ -102,7 +102,7 @@ public class ProgressPageControl extends ConComposite implements ISearchContextP
         //layout.verticalSpacing = 0;
         this.setLayout(layout);
         addDisposeListener(e -> disposeControl());
-        searchNotFoundColor = UIStyles.getDefaultWidgetBackground();
+        searchNotFoundColor = BaseThemeSettings.instance.colorWidgetBackground;
     }
 
     @Override

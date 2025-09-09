@@ -121,8 +121,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 /**
@@ -266,7 +266,7 @@ public class ResultSetViewer extends Viewer
 
         loadPresentationSettings();
         isDarkHighContrast = UIStyles.isDarkHighContrastTheme();
-        this.defaultBackground = isDarkHighContrast ? UIStyles.getDefaultWidgetBackground() : UIStyles.getDefaultTextBackground();
+        this.defaultBackground = isDarkHighContrast ? BaseThemeSettings.instance.colorWidgetBackground : UIStyles.getDefaultTextBackground();
         this.defaultForeground = isDarkHighContrast ? UIStyles.COLOR_WHITE : UIStyles.getDefaultTextForeground();
 
         long decoratorFeatures = decorator.getDecoratorFeatures();
@@ -732,7 +732,7 @@ public class ResultSetViewer extends Viewer
         if (filtersPanel == null) {
             return defaultBackground;
         }
-        return isDarkHighContrast ? UIStyles.getDefaultWidgetBackground() : UIStyles.getDefaultTextBackground();
+        return isDarkHighContrast ? BaseThemeSettings.instance.colorWidgetBackground : UIStyles.getDefaultTextBackground();
     }
 
     @NotNull

@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchThemeConstants;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.jkiss.code.NotNull;
 import org.jkiss.dbeaver.Log;
@@ -105,16 +104,7 @@ public class UIStyles {
     }
     
     public static boolean isDarkHighContrastTheme() {
-        return isHighContrastTheme() && UIUtils.isDark(getDefaultWidgetBackground().getRGB());
-    }
-
-    public static Color getDefaultWidgetBackground() {
-        org.eclipse.ui.themes.ITheme theme = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
-        Color color = theme.getColorRegistry().get(IWorkbenchThemeConstants.INACTIVE_TAB_BG_START);
-        if (color == null) {
-            color = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-        }
-        return color;
+        return isHighContrastTheme() && UIUtils.isDark(BaseThemeSettings.instance.colorWidgetBackground.getRGB());
     }
 
     public static Color getDefaultTextBackground() {

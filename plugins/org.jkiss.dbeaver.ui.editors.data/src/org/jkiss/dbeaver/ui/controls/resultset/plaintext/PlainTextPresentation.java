@@ -84,7 +84,7 @@ public class PlainTextPresentation extends AbstractPresentation implements IResu
         super.createPresentation(controller, parent);
 
         UIUtils.createHorizontalLine(parent);
-        text = new StyledText(parent, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        text = new StyledText(parent, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         text.setBlockSelection(true);
         text.setCursor(parent.getDisplay().getSystemCursor(SWT.CURSOR_IBEAM));
         text.setMargins(4, 4, 4, 4);
@@ -130,7 +130,7 @@ public class PlainTextPresentation extends AbstractPresentation implements IResu
     protected void applyThemeSettings(ITheme currentTheme) {
         text.setFont(BaseThemeSettings.instance.monospaceFont);
         if (UIStyles.isDarkHighContrastTheme()) {
-            text.setBackground(UIStyles.getDefaultWidgetBackground());
+            text.setBackground(UIStyles.getDefaultTextBackground());
             text.setForeground(UIStyles.COLOR_WHITE);
             curLineColor = COLOR_GREEN_CONTRAST;
         } else {

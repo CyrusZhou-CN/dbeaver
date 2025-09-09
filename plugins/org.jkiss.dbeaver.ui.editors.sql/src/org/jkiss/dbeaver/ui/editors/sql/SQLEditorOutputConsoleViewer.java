@@ -124,7 +124,7 @@ public class SQLEditorOutputConsoleViewer extends TextConsoleViewer {
             }
             if (UIStyles.isDarkHighContrastTheme()) {
                 textWidget.setForeground(UIStyles.COLOR_WHITE);
-                textWidget.setBackground(UIStyles.getDefaultWidgetBackground());
+                textWidget.setBackground(BaseThemeSettings.instance.colorWidgetBackground);
             } else {
                 textWidget.setForeground(UIStyles.getDefaultTextForeground());
                 textWidget.setBackground(UIStyles.getDefaultTextBackground());
