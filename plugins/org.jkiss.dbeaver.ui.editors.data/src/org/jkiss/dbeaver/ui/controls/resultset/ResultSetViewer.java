@@ -359,7 +359,7 @@ public class ResultSetViewer extends Viewer
                 });
 
                 this.panelToolBar = new ToolBarManager(SWT.HORIZONTAL | SWT.RIGHT | SWT.FLAT);
-                Composite trControl = new ConComposite(panelFolder, SWT.NONE);
+                Composite trControl = new Composite(panelFolder, SWT.NONE);
                 trControl.setLayout(new FillLayout());
                 ToolBar panelToolbarControl = this.panelToolBar.createControl(trControl);
                 this.panelFolder.setTopRight(trControl, SWT.RIGHT | SWT.WRAP);
@@ -474,7 +474,7 @@ public class ResultSetViewer extends Viewer
 
     private void applyCurrentPresentationThemeSettings() {
         if (panelFolder != null) {
-            panelFolder.setFont(JFaceResources.getFont(UIFonts.DBEAVER_FONTS_MAIN_FONT));
+            panelFolder.setFont(JFaceResources.getFont(UIFonts.Eclipse.PART_TITLE_FONT));
         }
 
         if (statusBar != null) {
@@ -1625,18 +1625,18 @@ public class ResultSetViewer extends Viewer
         }
     }
 
-    public void updateEditControls()
-    {
+    public void updateEditControls() {
         fireResultSetChange();
         updateToolbar();
         if (presentationSwitchFolder != null) {
             // Enable presentations
             for (VerticalButton pb : presentationSwitchFolder.getItems()) {
-                if (pb.getData() instanceof ResultSetPresentationDescriptor) {
-                    pb.setVisible(!recordMode || ((ResultSetPresentationDescriptor) pb.getData()).supportsRecordMode());
+                if (pb.getData() instanceof ResultSetPresentationDescriptor descriptor) {
+                    pb.setVisible(!recordMode || descriptor.supportsRecordMode());
                 }
             }
         }
+        UIUtils.asyncExec(() -> UIStyles.fixToolBarForeground(toolbarList));
     }
 
     /**
@@ -3697,7 +3697,8 @@ public class ResultSetViewer extends Viewer
             DBSEntityAttributeRef refAttr = refAttrs.get(i);
             DBDAttributeBinding ownBinding = bindingsModel.getAttributeBinding(ownAttr.getAttribute());
             if (ownBinding == null) {
-                DBWorkbench.getPlatformUI().showError("Cannot navigate", "Attribute " + ownAttr.getAttribute() + " is missing in result set");
+                DBWorkbench.getPlatformUI()
+                    .showError("Cannot navigate", "Attribute " + ownAttr.getAttribute() + " is missing in result set");
                 return;
             }
 
@@ -3710,9 +3711,8 @@ public class ResultSetViewer extends Viewer
             }
 
         }
-        // Save cur data filter in state
         if (curState == null) {
-            setNewState((DBSDataContainer) targetEntity, model.getDataFilter());
+            setNewState(container.getDataContainer(), model.getDataFilter());
         }
         curState.filter = new DBDDataFilter(bindingsModel.getDataFilter());
         navigateEntity(monitor, newWindow, targetEntity, constraints);
