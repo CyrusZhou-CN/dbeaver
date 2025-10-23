@@ -1,0 +1,30 @@
+# 完整的自动化发布工作流
+name: Automated Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Generate Changelog
+      run: |
+        # 从 git 日志生成变更内容
+        git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..HEAD > changelog.md
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: changelog.md
+        files: |
+          build/*.zip
+          build/*.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
