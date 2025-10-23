@@ -33,20 +33,7 @@ jobs:
           git push --tags --progress "origin" --force
       - name: Sync all branches
         run: |
-
-          REMOTE_REPO="dbeaver/dbeaver.wiki"
-          LOCAL_REPO="CyrusZhou-CN/dbeaver.wiki"
-          
-          # 获取所有远程分支
-          REMOTE_BRANCHES=$(gh api repos/$REMOTE_REPO/branches  --paginate  --jq '.[].name')
-          LOCAL_BRANCHES=$(gh api repos/$LOCAL_REPO/branches  --paginate  --jq '.[].name')
-          
-          for branch in $REMOTE_BRANCHES; do
-            echo "Local branch $branch exists, syncing..."
-            # 创建本地分支并设置为跟踪远程分支
-            git checkout -b $branch upstream/$branch
-            git push origin $branch --force
-          done
+          git push origin --force
 
       - name: Push tags to own repo
         run: |
