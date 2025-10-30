@@ -33,7 +33,6 @@ import org.jkiss.dbeaver.model.connection.DBPConnectionConfiguration;
 import org.jkiss.dbeaver.model.exec.DBCException;
 import org.jkiss.dbeaver.model.exec.jdbc.*;
 import org.jkiss.dbeaver.model.impl.jdbc.JDBCExecutionContext;
-import org.jkiss.dbeaver.model.impl.jdbc.JDBCRemoteInstance;
 import org.jkiss.dbeaver.model.impl.jdbc.JDBCUtils;
 import org.jkiss.dbeaver.model.impl.jdbc.cache.JDBCObjectCache;
 import org.jkiss.dbeaver.model.impl.net.SSLHandlerTrustStoreImpl;
@@ -201,9 +200,18 @@ public class ClickhouseDataSource extends GenericDataSource {
                 return type;
             }
         }
-        return super.resolveDataType(monitor, typeFullName);
+
+        DBSDataType type = super.resolveDataType(monitor, typeFullName);
+        if (type != null) {
+            return type;
+        }
+
+        // As a last resort, try to find the type without modifiers
+        String baseTypeName = ClickhouseTypeParser.getTypeNameWithoutModifiers(typeFullName);
+        return super.resolveDataType(monitor, baseTypeName);
     }
 
+    @NotNull
     @Override
     public String getDefaultDataTypeName(@NotNull DBPDataKind dataKind) {
         switch (dataKind) {

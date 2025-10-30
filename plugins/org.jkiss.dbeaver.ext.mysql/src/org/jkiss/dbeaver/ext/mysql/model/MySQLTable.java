@@ -174,7 +174,7 @@ public class MySQLTable extends MySQLTableBase
 
     public static class AdditionalInfoValidator implements IPropertyCacheValidator<MySQLTable> {
         @Override
-        public boolean isPropertyCached(MySQLTable object, Object propertyId)
+        public boolean isPropertyCached(@NotNull MySQLTable object, @NotNull Object propertyId)
         {
             return object.additionalInfo.loaded;
         }
@@ -725,6 +725,7 @@ public class MySQLTable extends MySQLTableBase
         };
     }
 
+    @NotNull
     @Override
     public String getObjectDefinitionText(@NotNull DBRProgressMonitor monitor, @NotNull Map<String, Object> options) throws DBException {
         return getDDL(monitor, options);
@@ -863,6 +864,7 @@ public class MySQLTable extends MySQLTableBase
         {
             return false;
         }
+        @Nullable
         @Override
         public Object[] getPossibleValues(MySQLTable object)
         {
@@ -883,6 +885,7 @@ public class MySQLTable extends MySQLTableBase
         {
             return false;
         }
+        @Nullable
         @Override
         public Object[] getPossibleValues(MySQLTable object)
         {
@@ -896,6 +899,7 @@ public class MySQLTable extends MySQLTableBase
         {
             return false;
         }
+        @Nullable
         @Override
         public Object[] getPossibleValues(MySQLTable object)
         {
@@ -909,7 +913,7 @@ public class MySQLTable extends MySQLTableBase
 
     public static class PartitionedTablePropertyValidator implements IPropertyValueValidator<MySQLTable, Object> {
         @Override
-        public boolean isValidValue(MySQLTable object, Object value) throws IllegalArgumentException {
+        public boolean isValidValue(@NotNull MySQLTable object, @Nullable Object value) throws IllegalArgumentException {
             return !object.isPartition();
         }
     }
