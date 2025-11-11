@@ -51,6 +51,8 @@ public class ConfirmationDialog extends MessageDialogWithToggle {
 
     public static final String PREF_KEY_PREFIX = "org.jkiss.dbeaver.core.confirm."; //$NON-NLS-1$
 
+    public static final int QUESTION_WITH_YES_TO_ALL = 7;
+
     private final boolean hideToggle;
 
     public ConfirmationDialog(
@@ -163,6 +165,9 @@ public class ConfirmationDialog extends MessageDialogWithToggle {
             case QUESTION_WITH_CANCEL -> RuntimeUtils.isMacOS() ?
                 new String[]{IDialogConstants.CANCEL_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.YES_LABEL } :
                 new String[]{IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL};
+            case QUESTION_WITH_YES_TO_ALL -> RuntimeUtils.isMacOS() ?
+                new String[] {IDialogConstants.NO_LABEL, IDialogConstants.YES_LABEL, IDialogConstants.YES_TO_ALL_LABEL} :
+                new String[] {IDialogConstants.YES_TO_ALL_LABEL, IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL};
             default -> throw new IllegalArgumentException(
                 "Illegal value for kind in MessageDialog.open()"); //$NON-NLS-1$
         };
@@ -182,7 +187,7 @@ public class ConfirmationDialog extends MessageDialogWithToggle {
                 }
             case QUESTION:
                 return RuntimeUtils.isMacOS() ? 0 : 1;
-            case QUESTION_WITH_CANCEL: {
+            case QUESTION_WITH_CANCEL, QUESTION_WITH_YES_TO_ALL: {
                 return RuntimeUtils.isMacOS() ? 0 : 2;
             }
             default:
