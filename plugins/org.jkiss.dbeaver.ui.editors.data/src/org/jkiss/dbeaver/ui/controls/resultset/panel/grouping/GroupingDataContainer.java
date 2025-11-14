@@ -91,7 +91,7 @@ public class GroupingDataContainer implements TransformerDataContainer {
         long maxRows,
         long flags,
         int fetchSize
-    ) throws DBCException {
+    ) throws DBException {
         DBCStatistics statistics = new DBCStatistics();
         if (query == null) {
             statistics.addMessage("Empty query");
@@ -140,29 +140,20 @@ public class GroupingDataContainer implements TransformerDataContainer {
             statistics.setExecuteTime(System.currentTimeMillis() - startTime);
             if (executeResult) {
                 try (DBCResultSet dbResult = dbStat.openResultSet()) {
-                    try {
-                        dataReceiver.fetchStart(session, dbResult, firstRow, maxRows);
+                    DBDDataReceiver.startFetchWorkflow(dataReceiver, session, dbResult, firstRow, maxRows);
 
-                        startTime = System.currentTimeMillis();
-                        long rowCount = 0;
-                        while (dbResult.nextRow()) {
-                            if (monitor.isCanceled() || (hasLimits && rowCount >= maxRows)) {
-                                // Fetch not more than max rows
-                                break;
-                            }
-                            dataReceiver.fetchRow(session, dbResult);
-                            rowCount++;
+                    startTime = System.currentTimeMillis();
+                    long rowCount = 0;
+                    while (dbResult.nextRow()) {
+                        if (monitor.isCanceled() || (hasLimits && rowCount >= maxRows)) {
+                            // Fetch not more than max rows
+                            break;
                         }
-                        statistics.setFetchTime(System.currentTimeMillis() - startTime);
-                        statistics.setRowsFetched(rowCount);
-                    } finally {
-                        // Signal that fetch was ended
-                        try {
-                            dataReceiver.fetchEnd(session, dbResult);
-                        } catch (Throwable e) {
-                            log.error("Error while finishing result set fetch", e); //$NON-NLS-1$
-                        }
+                        dataReceiver.fetchRow(session, dbResult);
+                        rowCount++;
                     }
+                    statistics.setFetchTime(System.currentTimeMillis() - startTime);
+                    statistics.setRowsFetched(rowCount);
                 }
             }
             return statistics;
