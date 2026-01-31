@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2025 DBeaver Corp and others
+ * Copyright (C) 2010-2026 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,25 +81,29 @@ public class AIFunctionDescriptor extends AbstractDescriptor {
         }
     }
 
-    private final IConfigurationElement contributorConfig;
     private final ObjectType objectType;
     private final String id;
     private final String name;
     private final DBPImage icon;
     private final boolean global;
+    private final boolean hidden;
     private final AIFunctionResult.FunctionType type;
+    private final String[] dependsOn;
+    private final String description;
     private final String categoryId;
     private final Parameter[] parameters;
 
     public AIFunctionDescriptor(@NotNull IConfigurationElement config) {
         super(config);
-        this.contributorConfig = config;
         this.objectType = new ObjectType(config, RegistryConstants.ATTR_CLASS);
         this.icon = iconToImage(config.getAttribute(RegistryConstants.ATTR_ICON));
-        this.id = config.getAttribute("id");
-        this.name = config.getAttribute("name");
+        this.id = config.getAttribute(RegistryConstants.ATTR_ID);
+        this.name = config.getAttribute(RegistryConstants.ATTR_NAME);
         this.global = CommonUtils.toBoolean(config.getAttribute("global"));
+        this.hidden = CommonUtils.toBoolean(config.getAttribute("hidden"));
         this.categoryId = config.getAttribute("categoryId");
+        this.description = config.getAttribute(RegistryConstants.ATTR_DESCRIPTION);
+        this.dependsOn = CommonUtils.splitString(config.getAttribute("dependsOn"), ',').toArray(new String[0]);
         this.type = CommonUtils.valueOf(
             AIFunctionResult.FunctionType.class,
             config.getAttribute("type"),
@@ -135,9 +139,8 @@ public class AIFunctionDescriptor extends AbstractDescriptor {
 
     @Nullable
     public String getDescription() {
-        return contributorConfig.getAttribute("description");
+        return description;
     }
-
     /**
      * Global functions are passed in ALL requests
      */
@@ -145,9 +148,18 @@ public class AIFunctionDescriptor extends AbstractDescriptor {
         return global;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
     @NotNull
     public Parameter[] getParameters() {
         return parameters;
+    }
+
+    @NotNull
+    public String[] getDependsOn() {
+        return dependsOn;
     }
 
     @NotNull
