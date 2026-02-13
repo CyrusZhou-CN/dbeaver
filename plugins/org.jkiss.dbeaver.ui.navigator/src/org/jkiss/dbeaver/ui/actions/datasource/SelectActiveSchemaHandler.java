@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2025 DBeaver Corp and others
+ * Copyright (C) 2010-2026 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,7 @@ public class SelectActiveSchemaHandler extends AbstractDataSourceHandler impleme
 
         DBCExecutionContext executionContext = getExecutionContextFromPart(activeEditor);
         ContextDefaultObjectsReader contextDefaultObjectsReader = new ContextDefaultObjectsReader(dataSourceContainer.getDataSource(), executionContext);
+        contextDefaultObjectsReader.setReadNodes(true);
         try {
             UIUtils.runInProgressService(contextDefaultObjectsReader);
         } catch (InvocationTargetException e) {
@@ -104,13 +105,14 @@ public class SelectActiveSchemaHandler extends AbstractDataSourceHandler impleme
                 }
             }
         }
-        DBNDatabaseNode selectedNode = selectedDB == null ? null : DBWorkbench.getPlatform().getNavigatorModel().getNodeByObject(selectedDB);
+        DBNDatabaseNode selectedNode = selectedDB == null ?
+            null : DBWorkbench.getPlatform().getNavigatorModel().getNodeByObject(selectedDB);
         SelectDatabaseDialog dialog = new SelectDatabaseDialog(
             HandlerUtil.getActiveShell(event),
             dataSourceContainer,
             contextDefaultObjectsReader.getDefaultCatalogName(),
             contextDefaultObjectsReader.getNodeList(),
-            selectedNode == null ? null : Collections.singletonList(selectedNode));
+            selectedNode == null ? Collections.emptyList() : Collections.singletonList(selectedNode));
         dialog.setModeless(true);
         if (dialog.open() == IDialogConstants.CANCEL_ID) {
             return null;
