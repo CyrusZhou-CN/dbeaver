@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.jkiss.code.NotNull;
 import org.jkiss.code.Nullable;
 import org.jkiss.dbeaver.model.data.DBDAttributeBinding;
+import org.jkiss.dbeaver.ui.controls.findandreplace.FindReplaceOverlay;
 
 import java.util.Map;
 
@@ -135,6 +136,10 @@ public interface IResultSetPresentation {
     @Nullable
     ResultSetCellLocation getCurrentCellLocation();
 
+    default void setCurrentCellLocation(@NotNull ResultSetCellLocation cellLocation) {
+        setCurrentAttribute(cellLocation.getAttribute());
+    }
+
     void setCurrentAttribute(@NotNull DBDAttributeBinding attribute);
 
     void showAttribute(@NotNull DBDAttributeBinding attribute);
@@ -152,6 +157,11 @@ public interface IResultSetPresentation {
     Map<Transfer, Object> copySelection(@NotNull ResultSetCopySettings settings);
 
     void printResultSet();
+
+    @Nullable
+    default FindReplaceOverlay getFindReplaceOverlay() {
+        return null;
+    }
 
     /**
      * Retrieves font identifier to increase or decrease its size as the user zooms in/out on the presentation.

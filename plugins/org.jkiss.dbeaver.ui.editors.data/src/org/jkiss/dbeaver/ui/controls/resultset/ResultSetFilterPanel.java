@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -70,12 +71,14 @@ import org.jkiss.dbeaver.ui.contentassist.ContentProposalExt;
 import org.jkiss.dbeaver.ui.controls.DoubleClickMouseAdapter;
 import org.jkiss.dbeaver.ui.controls.ListContentProvider;
 import org.jkiss.dbeaver.ui.controls.StyledTextUtils;
+import org.jkiss.dbeaver.ui.controls.findandreplace.FindReplaceOverlay;
 import org.jkiss.dbeaver.ui.controls.resultset.actions.FilterResetAllPinsAction;
 import org.jkiss.dbeaver.ui.controls.resultset.actions.FilterResetAllSettingsAction;
 import org.jkiss.dbeaver.ui.controls.resultset.actions.FilterResetAllTransformersAction;
 import org.jkiss.dbeaver.ui.controls.resultset.colors.ResetAllColorAction;
 import org.jkiss.dbeaver.ui.controls.resultset.internal.ResultSetMessages;
 import org.jkiss.dbeaver.ui.controls.resultset.spreadsheet.SpreadsheetCommandHandler;
+import org.jkiss.dbeaver.ui.controls.resultset.spreadsheet.SpreadsheetPresentation;
 import org.jkiss.dbeaver.ui.css.CSSUtils;
 import org.jkiss.dbeaver.ui.css.ICSSBackgroundMimicControl;
 import org.jkiss.dbeaver.ui.editors.TextEditorUtils;
@@ -100,6 +103,23 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
     private static final int MIN_FILTER_TEXT_HEIGHT = 20;
     private static final int MAX_HISTORY_PANEL_HEIGHT = 200;
 
+    private final FindReplaceOverlay.EventListener findReplaceOverlayListener = new FindReplaceOverlay.EventListener() {
+        @Override
+        public void opened(@NotNull FindReplaceOverlay overlay) {
+            setFindReplaceButtonSelection(overlay);
+        }
+
+        @Override
+        public void closed(@NotNull FindReplaceOverlay overlay) {
+            setFindReplaceButtonSelection(overlay);
+        }
+
+        @Override
+        public void disposed(@NotNull FindReplaceOverlay overlay) {
+            setFindReplaceButtonSelection(overlay);
+        }
+    };
+
     @NotNull
     private final ResultSetViewer viewer;
 
@@ -121,6 +141,7 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
     private ToolItem filtersClearButton;
     private ToolItem historyBackButton;
     private ToolItem historyForwardButton;
+    private ToolItem openFindReplaceButton;
 
     private final Composite filterComposite;
 
@@ -328,6 +349,39 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
                 historyForwardButton.setEnabled(false);
                 historyForwardButton.addSelectionListener(new HistoryMenuListener(historyForwardButton, false));
             }
+
+            UIUtils.createToolBarSeparator(filterToolbar, SWT.NONE);
+
+            this.openFindReplaceButton = new ToolItem(filterToolbar, SWT.CHECK | SWT.NO_FOCUS);
+            this.openFindReplaceButton.setImage(DBeaverIcons.getImage(UIIcon.FIND_REPLACE));
+            this.openFindReplaceButton.setToolTipText(ActionUtils.findCommandDescription(
+                IWorkbenchCommandConstants.EDIT_FIND_AND_REPLACE, viewer.getSite(), false
+            ));
+            this.openFindReplaceButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+                FindReplaceOverlay currentOverlay = this.viewer.getActivePresentation().getFindReplaceOverlay();
+                if (this.openFindReplaceButton.getSelection()) {
+                    if (currentOverlay != null) {
+                        UIUtils.asyncExec(currentOverlay::open);
+                    } else {
+                        ResultSetPresentationDescriptor pd = this.viewer.getAvailablePresentations().stream()
+                            .filter(p -> p.getId().equals(SpreadsheetPresentation.PRESENTATION_ID))
+                            .findFirst().orElse(null);
+                        this.viewer.switchPresentation(pd);
+
+                        // open overlay after the presentation init events for the focus to correctly go to the search-box
+                        UIUtils.asyncExec(() -> {
+                            FindReplaceOverlay spreadsheetOverlay = this.viewer.getActivePresentation().getFindReplaceOverlay();
+                            if (spreadsheetOverlay != null) {
+                                spreadsheetOverlay.open();
+                            }
+                        });
+                    }
+                } else {
+                    if (currentOverlay != null) {
+                        UIUtils.asyncExec(currentOverlay::close);
+                    }
+                }
+            }));
         }
 
         this.addControlListener(new ControlListener() {
@@ -351,6 +405,25 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
             }
         });
 
+    }
+
+    void resultsetPresentationChanged(@NotNull IResultSetPresentation activePresentation) {
+        FindReplaceOverlay findReplaceOverlay = activePresentation.getFindReplaceOverlay();
+        if (findReplaceOverlay != null) {
+            findReplaceOverlay.addEventListener(this.findReplaceOverlayListener);
+            this.setFindReplaceButtonSelection(findReplaceOverlay);
+        }
+    }
+
+    private void setFindReplaceButtonSelection(@NotNull FindReplaceOverlay overlay) {
+        if (!openFindReplaceButton.isDisposed()) {
+            boolean isOpened = overlay.isOpened();
+            if (openFindReplaceButton.getSelection() != isOpened) {
+                openFindReplaceButton.setSelection(isOpened);
+            }
+        } else {
+            overlay.removeEventListener(this.findReplaceOverlayListener);
+        }
     }
 
     private boolean isImeComposing() {
@@ -1397,12 +1470,7 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
                     ResultSetViewer.HistoryStateItem state = stateHistory.get(i);
                     mi.setText(state.describeState());
                     final int statePosition = i;
-                    mi.addSelectionListener(new SelectionAdapter() {
-                        @Override
-                        public void widgetSelected(SelectionEvent e) {
-                            viewer.navigateHistory(statePosition);
-                        }
-                    });
+                    mi.addSelectionListener(SelectionListener.widgetSelectedAdapter(event -> viewer.navigateHistory(statePosition)));
                 }
                 historyMenu.setLocation(pt.x, pt.y + rect.height);
                 historyMenu.setVisible(true);
@@ -1496,6 +1564,8 @@ class ResultSetFilterPanel extends Composite implements IContentProposalProvider
             if (viewer.getDataContainer() instanceof DBSEntity) {
                 menuManager.add(ActionUtils.makeCommandContribution(
                     viewer.getSite(), IResultSetCommands.CMD_FILTER_SAVE_SETTING));
+                menuManager.add(ActionUtils.makeCommandContribution(
+                    viewer.getSite(), IResultSetCommands.CMD_FILTER_RESET_SETTING));
             }
 
             if (showHistoryItems) {
